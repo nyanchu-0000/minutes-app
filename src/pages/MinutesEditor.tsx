@@ -63,7 +63,6 @@ export const MinutesEditor: React.FC = () => {
                 content: "",
             });
 
-            // エディタ内容をリセット
             if (contentRef.current) {
                 contentRef.current.innerHTML = INITIAL_CONTENT_HTML;
             }
