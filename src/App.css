@@ -1,0 +1,210 @@
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --secondary-color: #6c757d;
+  --secondary-hover: #5a6268;
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --border-color: #dee2e6;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1rem 2rem;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.nav-link {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: var(--primary-color);
+}
+
+/* Main */
+.app-main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #fff;
+  border-top: 1px solid var(--border-color);
+  color: var(--secondary-color);
+}
+
+/* Common Components */
+.button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.button.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.button.secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.button.secondary:hover {
+  background-color: var(--secondary-hover);
+}
+
+.button.small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* List Page */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.minutes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.minute-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.minute-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.minute-title {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.minute-meta {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.minute-meta p {
+  margin: 0.25rem 0;
+}
+
+.minute-preview {
+  color: #444;
+  margin-bottom: 1.5rem;
+}
+
+/* Editor Page */
+.editor-form {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 200px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
