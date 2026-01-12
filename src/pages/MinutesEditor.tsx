@@ -13,7 +13,8 @@ const INITIAL_CONTENT_HTML =
 
 export const MinutesEditor: React.FC = () => {
     const [formData, setFormData] = useState<Partial<Minute>>(() => {
-        const savedMeta = localStorage.getItem(STORAGE_KEY_META);
+        // localStorage -> sessionStorage に変更
+        const savedMeta = sessionStorage.getItem(STORAGE_KEY_META);
         if (savedMeta) {
             try {
                 return JSON.parse(savedMeta);
@@ -32,11 +33,11 @@ export const MinutesEditor: React.FC = () => {
     const [suggestionPos, setSuggestionPos] = useState({ top: 0, left: 0 });
     const contentRef = useRef<HTMLDivElement>(null);
 
-    // 初期化処理：保存データがあれば復元、なければ初期テンプレートを配置
+    // 初期化処理
     useEffect(() => {
-        // 本文の復元
         if (contentRef.current) {
-            const savedContent = localStorage.getItem(STORAGE_KEY_CONTENT);
+            // localStorage -> sessionStorage に変更
+            const savedContent = sessionStorage.getItem(STORAGE_KEY_CONTENT);
 
             if (savedContent) {
                 contentRef.current.innerHTML = savedContent;
@@ -52,11 +53,10 @@ export const MinutesEditor: React.FC = () => {
                 "入力内容を全てリセットしてもよろしいですか？\nこの操作は取り消せません。"
             )
         ) {
-            // ローカルストレージから削除
-            localStorage.removeItem(STORAGE_KEY_META);
-            localStorage.removeItem(STORAGE_KEY_CONTENT);
+            // localStorage -> sessionStorage に変更
+            sessionStorage.removeItem(STORAGE_KEY_META);
+            sessionStorage.removeItem(STORAGE_KEY_CONTENT);
 
-            // フォームデータをリセット
             setFormData({
                 attendeesMem: "",
                 attendeesSf: "",
@@ -69,9 +69,10 @@ export const MinutesEditor: React.FC = () => {
         }
     };
 
-    // フォームデータ（参加者など）が変更されたら保存
+    // フォームデータが変更されたら保存
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEY_META, JSON.stringify(formData));
+        // localStorage -> sessionStorage に変更
+        sessionStorage.setItem(STORAGE_KEY_META, JSON.stringify(formData));
     }, [formData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,13 +84,11 @@ export const MinutesEditor: React.FC = () => {
         const value = e.target.value;
         if (!value) return;
 
-        // 全角・半角のカンマ、読点で分割
         const names = value
             .split(/[、,，]/)
             .map((s) => s.trim())
             .filter(Boolean);
 
-        // 「様」を付与して「、」で結合
         const formatted = names
             .map((name) => {
                 return name.endsWith("様") ? name : `${name}様`;
@@ -102,7 +101,6 @@ export const MinutesEditor: React.FC = () => {
     const updateStyles = () => {
         if (!contentRef.current) return;
 
-        // 子要素を走査してスタイルを適用
         const children = Array.from(contentRef.current.children);
         children.forEach((child) => {
             if (child instanceof HTMLElement) {
@@ -119,16 +117,14 @@ export const MinutesEditor: React.FC = () => {
     };
 
     const handleInput = () => {
-        // IME入力中は発火させない（ブラウザによって挙動が違うため、念のため）
-        // ただし、onInputはIME確定時にも走ることがあるので、setTimeoutで逃がすのが確実
         setTimeout(() => {
             checkSuggestionTrigger();
             updateStyles();
         }, 50);
 
-        // 本文が変更されたら保存
         if (contentRef.current) {
-            localStorage.setItem(
+            // localStorage -> sessionStorage に変更
+            sessionStorage.setItem(
                 STORAGE_KEY_CONTENT,
                 contentRef.current.innerHTML
             );
@@ -157,12 +153,10 @@ export const MinutesEditor: React.FC = () => {
         const range = selection.getRangeAt(0);
         const node = range.startContainer;
 
-        // テキストノードの場合のみ処理
         if (node.nodeType === Node.TEXT_NODE) {
             const text = node.textContent || "";
             const offset = range.startOffset;
 
-            // 全角「（」または半角「(」に対応
             if (
                 offset > 0 &&
                 (text[offset - 1] === "（" || text[offset - 1] === "(")
@@ -186,19 +180,13 @@ export const MinutesEditor: React.FC = () => {
         const range = selection.getRangeAt(0);
         const node = range.startContainer;
 
-        // カーソル位置（'（'または'('の直後）から、さらに前の文字を確認する
         if (node.nodeType === Node.TEXT_NODE) {
             const text = node.textContent || "";
             const offset = range.startOffset;
 
-            // offsetは現在のカーソル位置（括弧の後ろ）。
-            // text[offset - 1] は括弧
-            // text[offset - 2] が括弧の前の文字
-
             if (offset >= 2) {
                 const charBeforeParen = text[offset - 2];
                 if (charBeforeParen !== "。") {
-                    // '。'がない場合、括弧の前に'。'を挿入する
                     (node as Text).insertData(offset - 1, "。");
                 }
             }
@@ -215,7 +203,6 @@ export const MinutesEditor: React.FC = () => {
         const textNode = document.createTextNode(textToInsert);
         range.insertNode(textNode);
 
-        // カーソルを挿入テキストの後に移動
         range.setStartAfter(textNode);
         range.setEndAfter(textNode);
         selection.removeAllRanges();
@@ -224,15 +211,14 @@ export const MinutesEditor: React.FC = () => {
         setShowSuggestions(false);
         updateStyles();
 
-        // 挿入後も保存
         if (contentRef.current) {
-            localStorage.setItem(
+            // localStorage -> sessionStorage に変更
+            sessionStorage.setItem(
                 STORAGE_KEY_CONTENT,
                 contentRef.current.innerHTML
             );
         }
 
-        // フォーカスを戻す
         if (contentRef.current) {
             contentRef.current.focus();
         }
@@ -240,10 +226,8 @@ export const MinutesEditor: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // 保存処理削除
     };
 
-    // 候補リストの生成（スペースではなく「、」区切り）
     const memNames =
         formData.attendeesMem
             ?.split(/[、,，]/)
@@ -378,51 +362,47 @@ export const MinutesEditor: React.FC = () => {
                                         参加者を選択:
                                     </div>
 
-                                   {/* MEM Section */}
-{memSuggestions.length > 0 && (
-    <div style={{ marginBottom: "0.5rem" }}>
-        <div
-            style={{
-                fontSize: "0.75rem",
-                color: "#999",
-                marginBottom: "2px",
-            }}
-        >
-            MEM
-        </div>
-        <div
-            style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "0.5rem",
-            }}
-        >
-            {/* mapを使わず、MEMというボタンを1つだけ表示 */}
-            <button
-                type="button"
-                onMouseDown={(e) => {
-                    e.preventDefault();
-                    // 名前(s.name)は渡さず、空文字などを渡す
-                    insertSuggestion("", "MEM");
-                }}
-                style={{
-                    padding: "0.25rem 0.5rem",
-                    fontSize: "0.9rem",
-                    borderRadius: "12px",
-                    border: "1px solid #ccc",
-                    background: "#e3f2fd",
-                    cursor: "pointer",
-                    color: "#333",
-                    whiteSpace: "nowrap",
-                }}
-            >
-                MEM
-            </button>
-        </div>
-    </div>
-)}
+                                    {memSuggestions.length > 0 && (
+                                        <div style={{ marginBottom: "0.5rem" }}>
+                                            <div
+                                                style={{
+                                                    fontSize: "0.75rem",
+                                                    color: "#999",
+                                                    marginBottom: "2px",
+                                                }}
+                                            >
+                                                MEM
+                                            </div>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    flexWrap: "wrap",
+                                                    gap: "0.5rem",
+                                                }}
+                                            >
+                                                <button
+                                                    type="button"
+                                                    onMouseDown={(e) => {
+                                                        e.preventDefault();
+                                                        insertSuggestion("", "MEM");
+                                                    }}
+                                                    style={{
+                                                        padding: "0.25rem 0.5rem",
+                                                        fontSize: "0.9rem",
+                                                        borderRadius: "12px",
+                                                        border: "1px solid #ccc",
+                                                        background: "#e3f2fd",
+                                                        cursor: "pointer",
+                                                        color: "#333",
+                                                        whiteSpace: "nowrap",
+                                                    }}
+                                                >
+                                                    MEM
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
 
-                                    {/* SF Section */}
                                     {sfSuggestions.length > 0 && (
                                         <div>
                                             <div
