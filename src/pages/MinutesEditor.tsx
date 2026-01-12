@@ -210,7 +210,7 @@ export const MinutesEditor: React.FC = () => {
         }
 
         const textToInsert =
-            type === "MEM" ? `MEM${name}）` : `SF${finalName}）`;
+            type === "MEM" ? `MEM）` : `SF${finalName}）`;
 
         const textNode = document.createTextNode(textToInsert);
         range.insertNode(textNode);
@@ -378,57 +378,49 @@ export const MinutesEditor: React.FC = () => {
                                         参加者を選択:
                                     </div>
 
-                                    {/* MEM Section */}
-                                    {memSuggestions.length > 0 && (
-                                        <div style={{ marginBottom: "0.5rem" }}>
-                                            <div
-                                                style={{
-                                                    fontSize: "0.75rem",
-                                                    color: "#999",
-                                                    marginBottom: "2px",
-                                                }}
-                                            >
-                                                MEM
-                                            </div>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    flexWrap: "wrap",
-                                                    gap: "0.5rem",
-                                                }}
-                                            >
-                                                {memSuggestions.map((s, i) => (
-                                                    <button
-                                                        key={`mem-${i}`}
-                                                        type="button"
-                                                        onMouseDown={(e) => {
-                                                            e.preventDefault();
-                                                            insertSuggestion(
-                                                                s.name,
-                                                                s.type
-                                                            );
-                                                        }}
-                                                        style={{
-                                                            padding:
-                                                                "0.25rem 0.5rem",
-                                                            fontSize: "0.9rem",
-                                                            borderRadius:
-                                                                "12px",
-                                                            border: "1px solid #ccc",
-                                                            background:
-                                                                "#e3f2fd",
-                                                            cursor: "pointer",
-                                                            color: "#333",
-                                                            whiteSpace:
-                                                                "nowrap",
-                                                        }}
-                                                    >
-                                                        {s.name}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
+                                   {/* MEM Section */}
+{memSuggestions.length > 0 && (
+    <div style={{ marginBottom: "0.5rem" }}>
+        <div
+            style={{
+                fontSize: "0.75rem",
+                color: "#999",
+                marginBottom: "2px",
+            }}
+        >
+            MEM
+        </div>
+        <div
+            style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem",
+            }}
+        >
+            {/* mapを使わず、MEMというボタンを1つだけ表示 */}
+            <button
+                type="button"
+                onMouseDown={(e) => {
+                    e.preventDefault();
+                    // 名前(s.name)は渡さず、空文字などを渡す
+                    insertSuggestion("", "MEM");
+                }}
+                style={{
+                    padding: "0.25rem 0.5rem",
+                    fontSize: "0.9rem",
+                    borderRadius: "12px",
+                    border: "1px solid #ccc",
+                    background: "#e3f2fd",
+                    cursor: "pointer",
+                    color: "#333",
+                    whiteSpace: "nowrap",
+                }}
+            >
+                MEM
+            </button>
+        </div>
+    </div>
+)}
 
                                     {/* SF Section */}
                                     {sfSuggestions.length > 0 && (
