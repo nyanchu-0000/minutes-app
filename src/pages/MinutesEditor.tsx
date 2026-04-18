@@ -30,7 +30,11 @@ export const MinutesEditor: React.FC = () => {
     });
 
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [suggestionPos, setSuggestionPos] = useState({ top: 0, left: 0 });
+    const [suggestionPos, setSuggestionPos] = useState<{
+        top?: number;
+        bottom?: number;
+        left: number;
+    }>({ top: 0, left: 0 });
     const contentRef = useRef<HTMLDivElement>(null);
 
     // 初期化処理
@@ -162,10 +166,19 @@ export const MinutesEditor: React.FC = () => {
                 (text[offset - 1] === "（" || text[offset - 1] === "(")
             ) {
                 const rect = range.getBoundingClientRect();
-                setSuggestionPos({
-                    top: rect.bottom + window.scrollY + 5,
-                    left: rect.left + window.scrollX,
-                });
+                const MODAL_HEIGHT = 200;
+                const spaceBelow = window.innerHeight - rect.bottom;
+                if (spaceBelow < MODAL_HEIGHT) {
+                    setSuggestionPos({
+                        bottom: window.innerHeight - rect.top + 5,
+                        left: rect.left,
+                    });
+                } else {
+                    setSuggestionPos({
+                        top: rect.bottom + 5,
+                        left: rect.left,
+                    });
+                }
                 setShowSuggestions(true);
                 return;
             }
@@ -269,7 +282,7 @@ export const MinutesEditor: React.FC = () => {
             <form onSubmit={handleSubmit} className="editor-form">
                 <div className="form-row">
                     <div className="form-group flex-grow">
-                        <label htmlFor="attendeesMem">参加者 (MEM)</label>
+                        <label htmlFor="attendeesMem">参加者（社内）</label>
                         <input
                             type="text"
                             id="attendeesMem"
@@ -283,7 +296,7 @@ export const MinutesEditor: React.FC = () => {
                     </div>
 
                     <div className="form-group flex-grow">
-                        <label htmlFor="attendeesSf">参加者 (SF)</label>
+                        <label htmlFor="attendeesSf">参加者（クライアント）</label>
                         <input
                             type="text"
                             id="attendeesSf"
@@ -337,6 +350,7 @@ export const MinutesEditor: React.FC = () => {
                                     style={{
                                         position: "fixed",
                                         top: suggestionPos.top,
+                                        bottom: suggestionPos.bottom,
                                         left: suggestionPos.left,
                                         backgroundColor:
                                             "rgba(255, 255, 255, 0.98)",
@@ -371,7 +385,7 @@ export const MinutesEditor: React.FC = () => {
                                                     marginBottom: "2px",
                                                 }}
                                             >
-                                                MEM
+                                                社内
                                             </div>
                                             <div
                                                 style={{
@@ -412,7 +426,7 @@ export const MinutesEditor: React.FC = () => {
                                                     marginBottom: "2px",
                                                 }}
                                             >
-                                                SF
+                                                クライアント
                                             </div>
                                             <div
                                                 style={{
