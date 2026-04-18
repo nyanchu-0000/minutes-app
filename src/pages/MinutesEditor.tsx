@@ -211,7 +211,7 @@ export const MinutesEditor: React.FC = () => {
         }
 
         const textToInsert =
-            type === "MEM" ? `MEM）` : `SF${finalName}）`;
+            type === "MEM" ? `社内）` : `社外${finalName}）`;
 
         const textNode = document.createTextNode(textToInsert);
         range.insertNode(textNode);
@@ -235,6 +235,19 @@ export const MinutesEditor: React.FC = () => {
         if (contentRef.current) {
             contentRef.current.focus();
         }
+    };
+
+    const handleCopy = (e: React.ClipboardEvent<HTMLDivElement>) => {
+        const selection = window.getSelection();
+        if (!selection || selection.isCollapsed) return;
+
+        const selectedText = selection.toString();
+        const transformed = selectedText
+            .replace(/社内/g, "MEM")
+            .replace(/社外/g, "SF");
+
+        e.clipboardData.setData("text/plain", transformed);
+        e.preventDefault();
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -334,6 +347,7 @@ export const MinutesEditor: React.FC = () => {
                             onKeyUp={handleKeyUp}
                             onCompositionEnd={handleCompositionEnd}
                             onClick={handleClick}
+                            onCopy={handleCopy}
                             style={{
                                 minHeight: "400px",
                                 height: "auto",
@@ -411,7 +425,7 @@ export const MinutesEditor: React.FC = () => {
                                                         whiteSpace: "nowrap",
                                                     }}
                                                 >
-                                                    MEM
+                                                    社内
                                                 </button>
                                             </div>
                                         </div>
